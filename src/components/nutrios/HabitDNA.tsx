@@ -5,114 +5,83 @@ import { HABIT_HISTORY } from "@/data/seed";
 import { useNutriStore } from "@/hooks/useNutriStore";
 import { Flame, TrendingUp } from "lucide-react";
 
-function getScoreColor(score: number): string {
-  if (score >= 80) return "#8B5CF6";
-  if (score >= 60) return "#10B981";
-  if (score >= 35) return "#F59E0B";
-  if (score >= 10) return "#374151";
-  return "#1F2937";
+function scoreColor(score: number) {
+  if (score >= 80) return "#8875D4";
+  if (score >= 60) return "#5A8F76";
+  if (score >= 35) return "#B8872A";
+  if (score >= 10) return "#2E3340";
+  return "#181820";
 }
 
-const WEEKS = 5;
-const DAYS  = 7;
+const WEEKS = 5, DAYS = 7;
 
 export function HabitDNA() {
   const { streak } = useNutriStore();
-
-  // Reshape flat 35-day array into 5 weeks × 7 days
-  const grid = Array.from({ length: WEEKS }, (_, w) =>
-    HABIT_HISTORY.slice(w * DAYS, w * DAYS + DAYS)
-  );
-
-  const avgScore = Math.round(
-    HABIT_HISTORY.reduce((s, d) => s + d.score, 0) / HABIT_HISTORY.length
-  );
+  const grid = Array.from({ length: WEEKS }, (_, w) => HABIT_HISTORY.slice(w * DAYS, w * DAYS + DAYS));
+  const avg  = Math.round(HABIT_HISTORY.reduce((s, d) => s + d.score, 0) / HABIT_HISTORY.length);
 
   return (
     <div className="flex flex-col gap-4 h-full">
-      {/* Header stats */}
+      {/* Stats row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center">
-            <Flame className="w-4 h-4 text-orange-400" />
-          </div>
+          <Flame className="w-4 h-4" style={{ color: "#B8872A" }} />
           <div>
-            <p className="text-xs text-white/40">Current Streak</p>
-            <p className="text-lg font-bold text-white leading-none">{streak} days</p>
+            <p className="text-xs" style={{ color: "var(--text-3)" }}>Streak</p>
+            <p className="text-base font-bold" style={{ color: "var(--text-1)" }}>{streak}d</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-violet-500/20 flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-violet-400" />
-          </div>
+          <TrendingUp className="w-4 h-4" style={{ color: "#5A8F76" }} />
           <div className="text-right">
-            <p className="text-xs text-white/40">Avg Score</p>
-            <p className="text-lg font-bold text-white leading-none">{avgScore}</p>
+            <p className="text-xs" style={{ color: "var(--text-3)" }}>Avg</p>
+            <p className="text-base font-bold" style={{ color: "var(--text-1)" }}>{avg}</p>
           </div>
         </div>
       </div>
 
       {/* Day labels */}
-      <div className="flex gap-1.5 pl-1">
-        {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
-          <div key={i} className="flex-1 text-center text-[10px] text-white/25 font-medium">
-            {d}
-          </div>
+      <div className="flex gap-1.5">
+        {["M","T","W","T","F","S","S"].map((d, i) => (
+          <div key={i} className="flex-1 text-center" style={{ fontSize: 9, color: "var(--text-3)" }}>{d}</div>
         ))}
       </div>
 
-      {/* Habit grid — DNA-style */}
+      {/* Grid */}
       <div className="flex flex-col gap-1.5">
         {grid.map((week, wi) => (
           <div key={wi} className="flex gap-1.5">
-            {week.map((day, di) => {
-              const color = getScoreColor(day.score);
-              const isFuture = !day.logged && day.score === 0;
-              return (
-                <motion.div
-                  key={day.date}
-                  title={`${day.date}: ${day.score}pts`}
-                  className="flex-1 rounded-lg cursor-pointer group relative"
-                  style={{
-                    height: 28,
-                    backgroundColor: isFuture ? "#111111" : color,
-                    opacity: isFuture ? 0.3 : 1,
-                    boxShadow: day.score >= 80 ? `0 0 10px ${color}60` : "none",
-                  }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: isFuture ? 0.3 : 1 }}
-                  transition={{
-                    delay: (wi * DAYS + di) * 0.015,
-                    type: "spring",
-                    stiffness: 280,
-                    damping: 20,
-                  }}
-                  whileHover={{ scale: 1.15, opacity: 1, zIndex: 10 }}
-                >
-                  {day.streak && (
-                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-orange-400 border border-black" />
-                  )}
-                  {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 border border-white/10 rounded-lg text-[10px] text-white/80 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-                    {day.date.slice(5)} · {day.score}pts
-                  </div>
-                </motion.div>
-              );
-            })}
+            {week.map((day, di) => (
+              <motion.div
+                key={day.date}
+                title={`${day.date}: ${day.score}pts`}
+                className="flex-1 rounded-md cursor-pointer group relative"
+                style={{ height: 22, backgroundColor: scoreColor(day.score) }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: (wi * DAYS + di) * 0.012, type: "spring", stiffness: 300 }}
+                whileHover={{ scale: 1.15 }}
+              >
+                {day.streak && (
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full border border-black"
+                    style={{ background: "#B8872A" }} />
+                )}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none"
+                  style={{ background: "var(--surface-3)", color: "var(--text-1)", border: "1px solid var(--border)" }}>
+                  {day.date.slice(5)} · {day.score}
+                </div>
+              </motion.div>
+            ))}
           </div>
         ))}
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-between text-[10px] text-white/30 mt-auto">
+      <div className="flex items-center justify-between mt-auto" style={{ fontSize: 10, color: "var(--text-3)" }}>
         <span>Less</span>
         <div className="flex gap-1">
-          {[10, 35, 60, 80, 100].map((v) => (
-            <div
-              key={v}
-              className="w-4 h-4 rounded-sm"
-              style={{ backgroundColor: getScoreColor(v) }}
-            />
+          {[10,35,60,80,100].map((v) => (
+            <div key={v} className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: scoreColor(v) }} />
           ))}
         </div>
         <span>More</span>

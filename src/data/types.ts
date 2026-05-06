@@ -4,7 +4,7 @@ export type GoalType = "Deep Work" | "Recovery" | "Sleep Ready" | "Peak Performa
 export interface FoodEntry {
   id: string;
   name: string;
-  emoji: string;
+  icon: string;
   logged: boolean;
   calories: number;
   protein: number;
@@ -32,7 +32,7 @@ export interface HabitDay {
 export interface MealSuggestion {
   id: string;
   name: string;
-  emoji: string;
+  icon: string;
   prepTime: number;
   macros: { p: number; c: number; f: number };
   benefit: string;
