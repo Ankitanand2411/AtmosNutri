@@ -1,19 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BODY_METRICS } from "@/data/seed";
+import { useNutriStore } from "@/hooks/useNutriStore";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 function TrendIcon({ trend }: { trend: "up" | "down" | "neutral" }) {
-  if (trend === "up")   return <TrendingUp  className="w-3.5 h-3.5" style={{ color: "#5A8F76" }} />;
-  if (trend === "down") return <TrendingDown className="w-3.5 h-3.5" style={{ color: "#B8872A" }} />;
+  if (trend === "up")   return <TrendingUp  className="w-3.5 h-3.5" style={{ color: "#689A82" }} />;
+  if (trend === "down") return <TrendingDown className="w-3.5 h-3.5" style={{ color: "#C49537" }} />;
   return                       <Minus        className="w-3.5 h-3.5" style={{ color: "var(--text-3)" }} />;
 }
 
 export function BodyMetrics() {
+  const { dynamicMetrics } = useNutriStore();
+
   return (
     <div className="grid grid-cols-2 gap-3">
-      {BODY_METRICS.map((m, i) => (
+      {dynamicMetrics.map((m, i) => (
         <motion.div
           key={m.label}
           initial={{ opacity: 0, y: 10 }}
@@ -35,7 +37,7 @@ export function BodyMetrics() {
               className="h-full rounded-full"
               style={{ backgroundColor: m.color }}
               initial={{ width: 0 }}
-              animate={{ width: `${Math.min(parseInt(m.value), 100)}%` }}
+              animate={{ width: `${Math.min(parseInt(m.value) / (m.label === 'Gut Load' ? 25 : 1), 100)}%` }}
               transition={{ duration: 0.9, ease: "easeOut", delay: i * 0.08 + 0.3 }}
             />
           </div>

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNutriStore } from "@/hooks/useNutriStore";
 import { MEAL_SUGGESTIONS } from "@/data/seed";
 import type { MoodType, GoalType } from "@/data/types";
-import { Clock, Zap, Target, Frown, Coffee, Wind, Flame, BrainCircuit, HeartPulse, Moon, Rocket, Fish, Apple, CupSoda, Utensils } from "lucide-react";
+import { Clock, Zap, Target, Frown, Coffee, Wind, Flame, BrainCircuit, HeartPulse, Moon, Rocket, Fish, Apple, CupSoda, Utensils, Plus } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Coffee: Coffee,
@@ -16,12 +16,12 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 const MOODS: { label: MoodType; icon: React.ElementType; color: string }[] = [
-  { label: "Energized", icon: Zap,    color: "#B8872A" },
-  { label: "Focused",   icon: Target, color: "#8875D4" },
-  { label: "Anxious",   icon: Frown,  color: "#A0603A" },
-  { label: "Tired",     icon: Coffee, color: "#4A7FA5" },
-  { label: "Calm",      icon: Wind,   color: "#5A8F76" },
-  { label: "Stressed",  icon: Flame,  color: "#B8872A" },
+  { label: "Energized", icon: Zap,    color: "#C49537" },
+  { label: "Focused",   icon: Target, color: "#9381DF" },
+  { label: "Anxious",   icon: Frown,  color: "#AF6A41" },
+  { label: "Tired",     icon: Coffee, color: "#588EB6" },
+  { label: "Calm",      icon: Wind,   color: "#689A82" },
+  { label: "Stressed",  icon: Flame,  color: "#C49537" },
 ];
 
 const GOALS: { label: GoalType; icon: React.ElementType }[] = [
@@ -51,7 +51,7 @@ function MacroBar({ label, value, color }: { label: string; value: number; color
 }
 
 export function MoodMealMapper() {
-  const { currentMood, setMood, currentGoal, setGoal } = useNutriStore();
+  const { currentMood, setMood, currentGoal, setGoal, addFoodToLog } = useNutriStore();
 
   const suggestions = useMemo(() => {
     return MEAL_SUGGESTIONS.filter((m) =>
@@ -137,7 +137,7 @@ export function MoodMealMapper() {
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="group flex flex-col gap-4 p-4 rounded-xl cursor-pointer"
+                  className="group relative flex flex-col gap-4 p-4 rounded-xl"
                   style={{
                     background: "var(--surface-2)",
                     border: "1px solid var(--border)",
@@ -161,11 +161,19 @@ export function MoodMealMapper() {
                   
                   <p className="text-xs min-h-[32px]" style={{ color: "var(--text-2)" }}>{meal.benefit}</p>
                   
-                  <div className="space-y-1 mt-auto">
-                    <MacroBar label="P" value={meal.macros.p} color="#5A8F76" />
-                    <MacroBar label="C" value={meal.macros.c} color="#4A7FA5" />
-                    <MacroBar label="F" value={meal.macros.f} color="#B8872A" />
+                  <div className="space-y-1 mt-auto mb-10">
+                    <MacroBar label="P" value={meal.macros.p} color="#689A82" />
+                    <MacroBar label="C" value={meal.macros.c} color="#588EB6" />
+                    <MacroBar label="F" value={meal.macros.f} color="#C49537" />
                   </div>
+
+                  <button
+                    onClick={() => addFoodToLog(meal)}
+                    className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+                    style={{ background: meal.color, color: "#fff" }}
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add to Log
+                  </button>
                 </motion.div>
               );
             })}
