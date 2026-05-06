@@ -11,7 +11,7 @@ interface PageShellProps {
 
 export function PageShell({ title, subtitle, children }: PageShellProps) {
   return (
-    <div className="flex flex-col min-h-screen px-8 py-8 w-full">
+    <div className="flex flex-col min-h-screen px-8 py-10 max-w-[1200px] w-full mx-auto">
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}

@@ -46,13 +46,13 @@ export default function Overview() {
   const recentAvg = Math.round(HABIT_HISTORY.slice(-7).reduce((s, d) => s + d.score, 0) / 7);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-8 py-10 max-w-[1200px] w-full mx-auto">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-        <p className="label mb-2">Dashboard</p>
-        <h1 className="page-title">Good {currentHour < 12 ? "morning" : currentHour < 17 ? "afternoon" : "evening"}</h1>
-        <p className="text-sm mt-1.5" style={{ color: "var(--text-2)" }}>
-          Your body is in <span style={{ color: "var(--text-1)" }}>{todayWindow.label}</span> mode. {todayWindow.description.split(".")[0]}.
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+        <p className="label mb-3">Dashboard</p>
+        <h1 className="page-title">Good {currentHour < 12 ? "morning" : currentHour < 17 ? "afternoon" : "evening"}.</h1>
+        <p className="text-[15px] mt-2 font-light" style={{ color: "var(--text-2)" }}>
+          Your body is in <span className="font-medium" style={{ color: "var(--text-1)" }}>{todayWindow.label}</span> mode. {todayWindow.description.split(".")[0]}.
         </p>
       </motion.div>
 
